@@ -54,7 +54,7 @@ type ProvinceOption = { value: string; nameEn: string; nameTh: string; districts
 
 const THAILAND_LOCATIONS = thailandLocations as ProvinceOption[];
 
-// Rail suggestions stay intentionally curated. Areas without mapped stations can choose โ€No / not sureโ€.
+// Rail suggestions stay intentionally curated. Areas without mapped stations can choose “No / not sure”.
 const TRANSIT_BY_AREA: Record<string,string[]> = {
   "10|1038":["MRT Lat Phrao","MRT Lat Phrao 71","MRT Chok Chai 4","MRT Phawana"],
   "10|1039":["BTS Phrom Phong","BTS Thong Lo","BTS Ekkamai","BTS Phra Khanong","MRT Sukhumvit","MRT Phetchaburi"],
@@ -77,9 +77,9 @@ function findContactDetail(value: string): ContactMatch | null {
     { kind: "email address", regex: /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i },
     { kind: "website or contact link", regex: /(?:https?:\/\/|www\.|line\.me\/|lin\.ee\/|wa\.me\/|t\.me\/|m\.me\/|facebook\.com\/|instagram\.com\/|ig\.me\/)[^\s]+/i },
     { kind: "phone number", regex: /(?:\+?66[\s().-]*|0)[1-9](?:[\s().-]*\d){7,9}\b/ },
-    { kind: "LINE / messaging ID", regex: /(?:line\s*(?:id)?|เนเธฅเธเน|เนเธญเธ”เนเธฅเธเน|เนเธญเธ”เธตเนเธฅเธเน|whats?app|telegram|wechat|kakao)\s*[:๏ผ@]?\s*[A-Z0-9._-]{3,}/i },
-    { kind: "social-media handle", regex: /(?:instagram|facebook|fb|ig|tiktok)\s*[:๏ผ@]\s*[A-Z0-9._-]{3,}/i },
-    { kind: "contact instruction", regex: /(?:เนเธ—เธฃ(?:เธซเธฒ|เธ•เธดเธ”เธ•เนเธญ)?|เธ•เธดเธ”เธ•เนเธญ(?:เนเธ”เธขเธ•เธฃเธ)?|เน€เธเธญเธฃเน(?:เนเธ—เธฃ)?|call\s+me|contact\s+me|dm\s+me)\s*[:๏ผ]?\s*(?:\+?\d|@)/i },
+    { kind: "LINE / messaging ID", regex: /(?:line\s*(?:id)?|ไลน์|แอดไลน์|ไอดีไลน์|whats?app|telegram|wechat|kakao)\s*[:：@]?\s*[A-Z0-9._-]{3,}/i },
+    { kind: "social-media handle", regex: /(?:instagram|facebook|fb|ig|tiktok)\s*[:：@]\s*[A-Z0-9._-]{3,}/i },
+    { kind: "contact instruction", regex: /(?:โทร(?:หา|ติดต่อ)?|ติดต่อ(?:โดยตรง)?|เบอร์(?:โทร)?|call\s+me|contact\s+me|dm\s+me)\s*[:：]?\s*(?:\+?\d|@)/i },
   ];
   for (const rule of rules) {
     const match = text.match(rule.regex);
@@ -529,7 +529,7 @@ export default function AddPropertyPage() {
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#B8863F]">
-                BaanNest ยท New Listing
+                BaanNest · New Listing
               </p>
               <h1 className="mt-3 font-display text-5xl tracking-tight md:text-6xl">
                 List your property.
@@ -542,7 +542,7 @@ export default function AddPropertyPage() {
               href="/my-properties"
               className="inline-flex w-fit items-center rounded-xl border border-[#D8D0BE] bg-white px-4 py-2.5 text-sm font-semibold text-[#526158] transition hover:-translate-y-0.5 hover:border-[#B9AA8B]"
             >
-              โ Back to my listings
+              ← Back to my listings
             </a>
           </div>
         </div>
@@ -568,11 +568,11 @@ export default function AddPropertyPage() {
               <div className="grid grid-cols-2 gap-2">
                 <button type="button" onClick={() => setListingLanguage("th")}
                   className={`rounded-xl px-4 py-3 text-sm font-bold transition ${listingLanguage === "th" ? "bg-[#1F2E28] text-white shadow-md" : "bg-white text-[#56645C] hover:bg-[#F4F0E7]"}`}>
-                  เธ เธฒเธฉเธฒเนเธ—เธข {form.title.trim() || form.description.trim() ? "โ“" : ""}
+                  ภาษาไทย {form.title.trim() || form.description.trim() ? "✓" : ""}
                 </button>
                 <button type="button" onClick={() => setListingLanguage("en")}
                   className={`rounded-xl px-4 py-3 text-sm font-bold transition ${listingLanguage === "en" ? "bg-[#1F2E28] text-white shadow-md" : "bg-white text-[#56645C] hover:bg-[#F4F0E7]"}`}>
-                  EN English {form.title_en.trim() || form.description_en.trim() ? "โ“" : ""}
+                  EN English {form.title_en.trim() || form.description_en.trim() ? "✓" : ""}
                 </button>
               </div>
             </div>
@@ -581,18 +581,18 @@ export default function AddPropertyPage() {
               {listingLanguage === "th" ? (
                 <div className="space-y-6">
                   <div>
-                    <label className="mb-2 block text-sm font-semibold">เธซเธฑเธงเธเนเธญเธเธฃเธฐเธเธฒเธจ <span className="text-[#B8863F]">*</span></label>
+                    <label className="mb-2 block text-sm font-semibold">หัวข้อประกาศ <span className="text-[#B8863F]">*</span></label>
                     <input type="text" required value={form.title} onChange={(e) => updateField("title", e.target.value)}
-                      placeholder="เน€เธเนเธ เนเธซเนเน€เธเนเธฒเธเธญเธเนเธ” 2 เธซเนเธญเธเธเธญเธ เนเธเธฅเน BTS เธ—เธญเธเธซเธฅเนเธญ" className={inputClass} />
-                    <p className="mt-2 text-xs text-[#7B847E]">เธ เธฒเธฉเธฒเนเธ—เธขเน€เธเนเธเธเนเธญเธกเธนเธฅเธซเธฅเธฑเธเธเธญเธเธเธฃเธฐเธเธฒเธจเนเธฅเธฐเธเธณเน€เธเนเธเธ•เนเธญเธเธเธฃเธญเธ</p>
+                      placeholder="เช่น ให้เช่าคอนโด 2 ห้องนอน ใกล้ BTS ทองหล่อ" className={inputClass} />
+                    <p className="mt-2 text-xs text-[#7B847E]">ภาษาไทยเป็นข้อมูลหลักของประกาศและจำเป็นต้องกรอก</p>
                   </div>
                   <div>
                     <div className="mb-2 flex items-center justify-between gap-3">
-                      <label className="text-sm font-semibold">เธฃเธฒเธขเธฅเธฐเน€เธญเธตเธขเธ”</label>
+                      <label className="text-sm font-semibold">รายละเอียด</label>
                       <span className="text-xs text-[#8A918C]">{form.description.length} characters</span>
                     </div>
                     <textarea value={form.description} onChange={(e) => updateField("description", e.target.value)}
-                      placeholder="เธฃเธฒเธขเธฅเธฐเน€เธญเธตเธขเธ”เธ—เธฃเธฑเธเธขเน เน€เธเธญเธฃเนเธเธดเน€เธเธญเธฃเน เธเธฒเธฃเน€เธ”เธดเธเธ—เธฒเธ เธงเธดเธง เธชเธดเนเธเธญเธณเธเธงเธขเธเธงเธฒเธกเธชเธฐเธ”เธงเธ เนเธฅเธฐเธเนเธญเธกเธนเธฅเธชเธณเธเธฑเธเธญเธทเนเธ เน"
+                      placeholder="รายละเอียดทรัพย์ เฟอร์นิเจอร์ การเดินทาง วิว สิ่งอำนวยความสะดวก และข้อมูลสำคัญอื่น ๆ"
                       rows={7} className={`${inputClass} resize-none leading-6`} />
                   </div>
                 </div>
@@ -700,8 +700,8 @@ export default function AddPropertyPage() {
           <section className="rounded-[1.75rem] border border-[#DCD4C2] bg-white p-6 shadow-[0_10px_35px_rgba(31,46,40,0.05)] md:p-8">
             <div className="flex gap-4"><span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#1F2E28] text-xs font-bold text-white">03</span><div><h2 className="font-display text-3xl">Pricing</h2><p className="mt-1 text-sm text-[#6A756E]">Set the price people should see for this listing.</p></div></div>
             <div className={`mt-8 grid gap-5 ${form.listing_type === "both" ? "md:grid-cols-2" : "max-w-xl"}`}>
-              {(form.listing_type === "rent" || form.listing_type === "both") && <div><label className="mb-2 block text-sm font-semibold">Monthly rent <span className="text-[#B8863F]">*</span></label><div className="relative"><span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-[#66736B]">เธฟ</span><input type="number" min="0" required value={form.rent_price} onChange={(e)=>updateField("rent_price",e.target.value)} placeholder="25,000" className={`${inputClass} pl-9 pr-20`}/><span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-semibold text-[#7B847E]">/ month</span></div><p className="mt-2 text-xs text-[#7B847E]">Monthly asking rent in Thai baht.</p></div>}
-              {(form.listing_type === "sale" || form.listing_type === "both") && <div><label className="mb-2 block text-sm font-semibold">Sale price <span className="text-[#B8863F]">*</span></label><div className="relative"><span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-[#66736B]">เธฟ</span><input type="number" min="0" required value={form.sale_price} onChange={(e)=>updateField("sale_price",e.target.value)} placeholder="4,500,000" className={`${inputClass} pl-9`}/></div><p className="mt-2 text-xs text-[#7B847E]">Total asking sale price in Thai baht.</p></div>}
+              {(form.listing_type === "rent" || form.listing_type === "both") && <div><label className="mb-2 block text-sm font-semibold">Monthly rent <span className="text-[#B8863F]">*</span></label><div className="relative"><span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-[#66736B]">฿</span><input type="number" min="0" required value={form.rent_price} onChange={(e)=>updateField("rent_price",e.target.value)} placeholder="25,000" className={`${inputClass} pl-9 pr-20`}/><span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-semibold text-[#7B847E]">/ month</span></div><p className="mt-2 text-xs text-[#7B847E]">Monthly asking rent in Thai baht.</p></div>}
+              {(form.listing_type === "sale" || form.listing_type === "both") && <div><label className="mb-2 block text-sm font-semibold">Sale price <span className="text-[#B8863F]">*</span></label><div className="relative"><span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-[#66736B]">฿</span><input type="number" min="0" required value={form.sale_price} onChange={(e)=>updateField("sale_price",e.target.value)} placeholder="4,500,000" className={`${inputClass} pl-9`}/></div><p className="mt-2 text-xs text-[#7B847E]">Total asking sale price in Thai baht.</p></div>}
             </div>
           </section>
 
@@ -719,7 +719,7 @@ export default function AddPropertyPage() {
               {[
                 ["bedrooms", "Bedrooms", "2"],
                 ["bathrooms", "Bathrooms", "2"],
-                ["area_sqm", "Area (mยฒ)", "65"],
+                ["area_sqm", "Area (m²)", "65"],
               ].map(([field, label, placeholder]) => (
                 <div key={field}>
                   <label className="mb-2 block text-sm font-semibold">{label}</label>
@@ -741,16 +741,16 @@ export default function AddPropertyPage() {
             <div className="border-b border-[#EEE8DB] bg-[#FCFAF5] p-6 md:p-8"><div className="flex gap-4"><span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#1F2E28] text-xs font-bold text-white">05</span><div><div className="flex flex-wrap items-center gap-2"><h2 className="font-display text-3xl">Location & connectivity</h2><span className="rounded-full bg-[#F5E8D5] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-[#8A602C]">Guided</span></div><p className="mt-1 text-sm text-[#6A756E]">Province first, then district, then subdistrict. Only valid choices unlock.</p></div></div></div>
             <div className="p-6 md:p-8">
               <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-                <div><label className="mb-2 block text-sm font-semibold">Province / เธเธฑเธเธซเธงเธฑเธ” <span className="text-[#B8863F]">*</span></label><select required value={form.province} onChange={e=>chooseProvince(e.target.value)} className={inputClass}><option value="">Select province first</option>{THAILAND_LOCATIONS.map(x=><option key={x.value} value={x.value}>{x.nameTh} ยท {x.nameEn}</option>)}</select><p className="mt-2 text-xs text-[#7B847E]">Start here to unlock districts.</p></div>
-                <div><label className="mb-2 block text-sm font-semibold">District / เน€เธเธ•ยทเธญเธณเน€เธ เธญ <span className="text-[#B8863F]">*</span></label><select required disabled={!form.province} value={form.district} onChange={e=>chooseDistrict(e.target.value)} className={`${inputClass} disabled:cursor-not-allowed disabled:bg-[#EEEAE1] disabled:text-[#A3A49F]`}><option value="">{form.province?"Select district":"Choose province first"}</option>{districtOptions.map(x=><option key={x.value} value={x.value}>{x.nameTh} ยท {x.nameEn}</option>)}</select><p className="mt-2 text-xs text-[#7B847E]">{form.province?"Only districts in this province are shown.":"Locked until province is selected."}</p></div>
-                <div><label className="mb-2 block text-sm font-semibold">Subdistrict / เนเธเธงเธยทเธ•เธณเธเธฅ <span className="text-[#B8863F]">*</span></label><select required disabled={!form.district} value={form.subdistrict} onChange={e=>chooseSubdistrict(e.target.value)} className={`${inputClass} disabled:cursor-not-allowed disabled:bg-[#EEEAE1] disabled:text-[#A3A49F]`}><option value="">{form.district?"Select subdistrict":"Choose district first"}</option>{subdistrictOptions.map(x=><option key={x.value} value={x.value}>{x.nameTh} ยท {x.nameEn}</option>)}</select><p className="mt-2 text-xs text-[#7B847E]">{form.district?"Only subdistricts inside this district are shown.":"Locked until district is selected."}</p></div>
-                <div><label className="mb-2 block text-sm font-semibold">Postal code / เธฃเธซเธฑเธชเนเธเธฃเธฉเธ“เธตเธขเน</label><div className={`flex min-h-[52px] items-center rounded-2xl border px-4 py-3.5 font-semibold ${form.postal_code?"border-[#C9B68D] bg-[#FFF9EF] text-[#1F2E28]":"border-[#D8D0BE] bg-[#F1EEE7] text-[#9A9F9A]"}`}>{form.postal_code || "Auto-filled from subdistrict"}</div><p className="mt-2 text-xs text-[#7B847E]">Filled automatically from the selected Thai administrative area.</p></div>
+                <div><label className="mb-2 block text-sm font-semibold">Province / จังหวัด <span className="text-[#B8863F]">*</span></label><select required value={form.province} onChange={e=>chooseProvince(e.target.value)} className={inputClass}><option value="">Select province first</option>{THAILAND_LOCATIONS.map(x=><option key={x.value} value={x.value}>{x.nameTh} · {x.nameEn}</option>)}</select><p className="mt-2 text-xs text-[#7B847E]">Start here to unlock districts.</p></div>
+                <div><label className="mb-2 block text-sm font-semibold">District / เขต·อำเภอ <span className="text-[#B8863F]">*</span></label><select required disabled={!form.province} value={form.district} onChange={e=>chooseDistrict(e.target.value)} className={`${inputClass} disabled:cursor-not-allowed disabled:bg-[#EEEAE1] disabled:text-[#A3A49F]`}><option value="">{form.province?"Select district":"Choose province first"}</option>{districtOptions.map(x=><option key={x.value} value={x.value}>{x.nameTh} · {x.nameEn}</option>)}</select><p className="mt-2 text-xs text-[#7B847E]">{form.province?"Only districts in this province are shown.":"Locked until province is selected."}</p></div>
+                <div><label className="mb-2 block text-sm font-semibold">Subdistrict / แขวง·ตำบล <span className="text-[#B8863F]">*</span></label><select required disabled={!form.district} value={form.subdistrict} onChange={e=>chooseSubdistrict(e.target.value)} className={`${inputClass} disabled:cursor-not-allowed disabled:bg-[#EEEAE1] disabled:text-[#A3A49F]`}><option value="">{form.district?"Select subdistrict":"Choose district first"}</option>{subdistrictOptions.map(x=><option key={x.value} value={x.value}>{x.nameTh} · {x.nameEn}</option>)}</select><p className="mt-2 text-xs text-[#7B847E]">{form.district?"Only subdistricts inside this district are shown.":"Locked until district is selected."}</p></div>
+                <div><label className="mb-2 block text-sm font-semibold">Postal code / รหัสไปรษณีย์</label><div className={`flex min-h-[52px] items-center rounded-2xl border px-4 py-3.5 font-semibold ${form.postal_code?"border-[#C9B68D] bg-[#FFF9EF] text-[#1F2E28]":"border-[#D8D0BE] bg-[#F1EEE7] text-[#9A9F9A]"}`}>{form.postal_code || "Auto-filled from subdistrict"}</div><p className="mt-2 text-xs text-[#7B847E]">Filled automatically from the selected Thai administrative area.</p></div>
               </div>
-              {form.subdistrict&&<div className="mt-5 flex gap-3 rounded-2xl border border-[#C7D7CA] bg-[#F2F7F3] p-4"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#315A42] text-xs font-bold text-white">โ“</span><div><p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#557060]">Location confirmed</p><p className="mt-1 text-sm font-semibold">{form.location}</p></div></div>}
+              {form.subdistrict&&<div className="mt-5 flex gap-3 rounded-2xl border border-[#C7D7CA] bg-[#F2F7F3] p-4"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#315A42] text-xs font-bold text-white">✓</span><div><p className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#557060]">Location confirmed</p><p className="mt-1 text-sm font-semibold">{form.location}</p></div></div>}
               <div className={`mt-7 grid gap-5 ${form.property_type === "land" ? "" : "md:grid-cols-2"}`}><div><label className="mb-2 block text-sm font-semibold">Project / building name</label><input type="text" value={form.project_name} onChange={e=>updateField("project_name",e.target.value)} placeholder="e.g. The Esse at Singha Complex" className={inputClass}/></div>{form.property_type !== "land" && <div><label className="mb-2 block text-sm font-semibold">{form.property_type === "house" || form.property_type === "townhouse" ? "Number of storeys" : "Unit floor"}</label><input type="number" min={form.property_type === "house" || form.property_type === "townhouse" ? "1" : "0"} value={form.floor_number} onChange={e=>updateField("floor_number",e.target.value)} placeholder={form.property_type === "house" || form.property_type === "townhouse" ? "e.g. 2" : "e.g. 18"} className={inputClass}/></div>}</div>
               <div className={`mt-8 rounded-[1.6rem] border p-5 md:p-6 ${form.subdistrict?"border-[#D7CEBC] bg-[#FBF8F1]":"border-[#E4DFD4] bg-[#F5F2EB]"}`}>
                 <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center"><div><p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#A16F32]">Public transport</p><h3 className="mt-1 text-lg font-bold">BTS / MRT nearby?</h3><p className="mt-1 text-xs text-[#707A73]">{form.subdistrict?"Suggested from the selected district.":"Complete the location first."}</p></div><div className="flex gap-2"><button type="button" disabled={!form.subdistrict} onClick={()=>setTransitAvailability(true)} className={`rounded-xl border px-4 py-2.5 text-xs font-bold disabled:opacity-40 ${form.has_nearby_transit?"border-[#1F2E28] bg-[#1F2E28] text-white":"border-[#D3C9B7] bg-white text-[#56645C]"}`}>Yes, near transit</button><button type="button" disabled={!form.subdistrict} onClick={()=>setTransitAvailability(false)} className={`rounded-xl border px-4 py-2.5 text-xs font-bold disabled:opacity-40 ${form.subdistrict&&!form.has_nearby_transit?"border-[#B8863F] bg-[#FFF4E3] text-[#8A602C]":"border-[#D3C9B7] bg-white text-[#56645C]"}`}>No / not sure</button></div></div>
-                {form.subdistrict&&form.has_nearby_transit&&<div className="mt-6 border-t border-[#E4DCCB] pt-6">{transitOptions.length?<><label className="mb-3 block text-sm font-semibold">Nearest station <span className="text-[#B8863F]">*</span></label><div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{transitOptions.map(station=>{const network=station.split(" ")[0];const selected=form.nearby_transit===station;return <button key={station} type="button" onClick={()=>updateField("nearby_transit",station)} className={`rounded-2xl border p-3.5 text-left transition hover:-translate-y-0.5 ${selected?"border-[#B8863F] bg-[#FFF4E3] shadow-sm":"border-[#DDD6C7] bg-white"}`}><span className="flex items-center gap-2"><span className={`rounded-md px-2 py-1 text-[9px] font-black ${network==="BTS"?"bg-[#E8F2EB] text-[#315A42]":network==="MRT"?"bg-[#EDE9F6] text-[#5D4C7B]":"bg-[#F5E8D5] text-[#8A602C]"}`}>{network}</span>{selected&&<span className="ml-auto text-xs font-bold text-[#A16F32]">โ“</span>}</span><span className="mt-2 block text-xs font-bold">{station.replace(`${network} `,"")}</span></button>})}</div><div className="mt-5 max-w-sm"><label className="mb-2 block text-sm font-semibold">Distance to station</label><div className="relative"><input type="number" min="0" value={form.transit_distance_m} onChange={e=>updateField("transit_distance_m",e.target.value)} placeholder="e.g. 350" className={`${inputClass} pr-20`}/><span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-[#778078]">metres</span></div>{form.transit_distance_m&&Number(form.transit_distance_m)>0&&<p className="mt-2 text-xs font-semibold text-[#66736B]">About {Math.max(1,Math.round(Number(form.transit_distance_m)/80))} min walk ยท estimate</p>}</div></>:<div className="rounded-2xl border border-dashed border-[#D3C9B7] bg-white p-5 text-sm text-[#66736B]">No mapped rail stations for this area yet. Choose โ€No / not sureโ€ for now.</div>}</div>}
+                {form.subdistrict&&form.has_nearby_transit&&<div className="mt-6 border-t border-[#E4DCCB] pt-6">{transitOptions.length?<><label className="mb-3 block text-sm font-semibold">Nearest station <span className="text-[#B8863F]">*</span></label><div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{transitOptions.map(station=>{const network=station.split(" ")[0];const selected=form.nearby_transit===station;return <button key={station} type="button" onClick={()=>updateField("nearby_transit",station)} className={`rounded-2xl border p-3.5 text-left transition hover:-translate-y-0.5 ${selected?"border-[#B8863F] bg-[#FFF4E3] shadow-sm":"border-[#DDD6C7] bg-white"}`}><span className="flex items-center gap-2"><span className={`rounded-md px-2 py-1 text-[9px] font-black ${network==="BTS"?"bg-[#E8F2EB] text-[#315A42]":network==="MRT"?"bg-[#EDE9F6] text-[#5D4C7B]":"bg-[#F5E8D5] text-[#8A602C]"}`}>{network}</span>{selected&&<span className="ml-auto text-xs font-bold text-[#A16F32]">✓</span>}</span><span className="mt-2 block text-xs font-bold">{station.replace(`${network} `,"")}</span></button>})}</div><div className="mt-5 max-w-sm"><label className="mb-2 block text-sm font-semibold">Distance to station</label><div className="relative"><input type="number" min="0" value={form.transit_distance_m} onChange={e=>updateField("transit_distance_m",e.target.value)} placeholder="e.g. 350" className={`${inputClass} pr-20`}/><span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-[#778078]">metres</span></div>{form.transit_distance_m&&Number(form.transit_distance_m)>0&&<p className="mt-2 text-xs font-semibold text-[#66736B]">About {Math.max(1,Math.round(Number(form.transit_distance_m)/80))} min walk · estimate</p>}</div></>:<div className="rounded-2xl border border-dashed border-[#D3C9B7] bg-white p-5 text-sm text-[#66736B]">No mapped rail stations for this area yet. Choose “No / not sure” for now.</div>}</div>}
               </div>
             </div>
           </section>
@@ -826,7 +826,7 @@ export default function AddPropertyPage() {
                 return (
                   <button key={amenity} type="button" onClick={() => toggleAmenity(amenity)}
                     className={`rounded-full border px-4 py-2.5 text-sm font-semibold transition hover:-translate-y-0.5 ${active ? "border-[#1F2E28] bg-[#1F2E28] text-white" : "border-[#D8D0BE] bg-[#FBFAF6] text-[#56645C] hover:border-[#B8863F]"}`}>
-                    {active ? "โ“ " : "+ "}{amenity}
+                    {active ? "✓ " : "+ "}{amenity}
                   </button>
                 );
               })}
@@ -854,7 +854,7 @@ export default function AddPropertyPage() {
                   </div>
                   <p className="mt-1 max-w-2xl text-sm leading-6 text-[#6A756E]">
                     Strong photography makes a listing feel trustworthy. Put your best
-                    image first โ€” it becomes the cover across BaanNest.
+                    image first — it becomes the cover across BaanNest.
                   </p>
                 </div>
               </div>
@@ -914,7 +914,7 @@ export default function AddPropertyPage() {
                     Or click anywhere in this area to choose images from your device.
                   </p>
                   <p className="mt-5 text-[11px] font-medium tracking-wide text-[#8A918C]">
-                    JPG ยท PNG ยท WEBP &nbsp;ยท&nbsp; 10 MB each &nbsp;ยท&nbsp; 3โ€“15 photos
+                    JPG · PNG · WEBP &nbsp;·&nbsp; 10 MB each &nbsp;·&nbsp; 3–15 photos
                   </p>
                 </div>
               ) : (
@@ -1021,7 +1021,7 @@ export default function AddPropertyPage() {
                             className="flex h-8 w-8 items-center justify-center rounded-full bg-black/55 text-sm font-bold text-white shadow-lg backdrop-blur transition hover:bg-[#A23D35]"
                             aria-label={`Remove photo ${index + 1}`}
                           >
-                            ร—
+                            ×
                           </button>
                         </div>
 
@@ -1073,7 +1073,7 @@ export default function AddPropertyPage() {
 
                   <div className="mt-5 flex flex-col justify-between gap-2 border-t border-[#EEE8DB] pt-4 text-[11px] text-[#7B847E] sm:flex-row sm:items-center">
                     <p>Tip: lead with a bright, wide photo of the main living space.</p>
-                    <p>JPG, PNG or WEBP ยท 10 MB max each</p>
+                    <p>JPG, PNG or WEBP · 10 MB max each</p>
                   </div>
                 </>
               )}
@@ -1102,7 +1102,7 @@ export default function AddPropertyPage() {
                 disabled={loading}
                 className="rounded-xl bg-[#1F2E28] px-7 py-3 text-sm font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-[#2D4038] hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {loading ? `Submitting ${photos.length} photo${photos.length === 1 ? "" : "s"}...` : "Submit for review โ’"}
+                {loading ? `Submitting ${photos.length} photo${photos.length === 1 ? "" : "s"}...` : "Submit for review →"}
               </button>
             </div>
           </div>
@@ -1116,7 +1116,7 @@ export default function AddPropertyPage() {
                 <img src={photos[0].previewUrl} alt="Listing cover preview" className="h-full w-full object-cover" />
               ) : (
                 <div className="flex h-full flex-col items-center justify-center px-6 text-center text-[#778078]">
-                  <span className="text-3xl">โ</span>
+                  <span className="text-3xl">⌂</span>
                   <p className="mt-3 text-sm font-bold">Your cover photo appears here</p>
                   <p className="mt-1 text-xs">The first gallery photo becomes the listing cover.</p>
                 </div>
@@ -1135,39 +1135,39 @@ export default function AddPropertyPage() {
             <div className="p-6">
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#A16F32]">BaanNest listing preview</p>
               <div className="mt-3 grid grid-cols-2 gap-1 rounded-xl bg-[#F2EEE5] p-1">
-                <button type="button" onClick={() => setPreviewLanguage("th")} className={`rounded-lg px-3 py-2 text-[11px] font-bold transition ${previewLanguage === "th" ? "bg-white text-[#1F2E28] shadow-sm" : "text-[#778078]"}`}>เธ เธฒเธฉเธฒเนเธ—เธข</button>
+                <button type="button" onClick={() => setPreviewLanguage("th")} className={`rounded-lg px-3 py-2 text-[11px] font-bold transition ${previewLanguage === "th" ? "bg-white text-[#1F2E28] shadow-sm" : "text-[#778078]"}`}>ภาษาไทย</button>
                 <button type="button" onClick={() => setPreviewLanguage("en")} className={`rounded-lg px-3 py-2 text-[11px] font-bold transition ${previewLanguage === "en" ? "bg-white text-[#1F2E28] shadow-sm" : "text-[#778078]"}`}>English</button>
               </div>
               <h3 className="mt-3 font-display text-2xl leading-tight text-[#1F2E28]">
                 {previewLanguage === "en"
                   ? (form.title_en.trim() || "English version hasn't been added yet.")
-                  : (form.title.trim() || "เธซเธฑเธงเธเนเธญเธเธฃเธฐเธเธฒเธจเธเธญเธเธเธธเธ“")}
+                  : (form.title.trim() || "หัวข้อประกาศของคุณ")}
               </h3>
-              <p className="mt-3 text-sm leading-5 text-[#68736C]">{form.location.trim() || "Select Province โ’ District โ’ Subdistrict"}</p>
+              <p className="mt-3 text-sm leading-5 text-[#68736C]">{form.location.trim() || "Select Province → District → Subdistrict"}</p>
               {form.project_name.trim() && <p className="mt-1 text-xs font-semibold text-[#8A602C]">{form.project_name.trim()}</p>}
 
               <div className="mt-5 rounded-2xl bg-[#F7F3EA] p-4">
                 {(form.listing_type === "rent" || form.listing_type === "both") && (
-                  <p className="text-2xl font-black text-[#1F2E28]">{form.rent_price ? `เธฟ${Number(form.rent_price).toLocaleString()}` : "เธฟโ€”"} <span className="text-xs font-semibold text-[#78817B]">/ month</span></p>
+                  <p className="text-2xl font-black text-[#1F2E28]">{form.rent_price ? `฿${Number(form.rent_price).toLocaleString()}` : "฿—"} <span className="text-xs font-semibold text-[#78817B]">/ month</span></p>
                 )}
                 {(form.listing_type === "sale" || form.listing_type === "both") && (
                   <p className={`${form.listing_type === "both" ? "mt-2 border-t border-[#E3DCCC] pt-2 text-base" : "text-2xl"} font-black text-[#1F2E28]`}>
                     {form.listing_type === "both" && <span className="mr-2 text-[10px] font-bold uppercase tracking-[0.12em] text-[#8A602C]">Sale</span>}
-                    {form.sale_price ? `เธฟ${Number(form.sale_price).toLocaleString()}` : "เธฟโ€”"}
+                    {form.sale_price ? `฿${Number(form.sale_price).toLocaleString()}` : "฿—"}
                   </p>
                 )}
               </div>
 
               <div className="mt-5 grid grid-cols-3 gap-2 text-center">
-                <div className="rounded-xl border border-[#E7E0D3] p-3"><p className="font-bold">{form.bedrooms || "โ€”"}</p><p className="mt-1 text-[9px] uppercase tracking-wide text-[#899089]">Beds</p></div>
-                <div className="rounded-xl border border-[#E7E0D3] p-3"><p className="font-bold">{form.bathrooms || "โ€”"}</p><p className="mt-1 text-[9px] uppercase tracking-wide text-[#899089]">Baths</p></div>
-                <div className="rounded-xl border border-[#E7E0D3] p-3"><p className="font-bold">{form.area_sqm || "โ€”"}</p><p className="mt-1 text-[9px] uppercase tracking-wide text-[#899089]">mยฒ</p></div>
+                <div className="rounded-xl border border-[#E7E0D3] p-3"><p className="font-bold">{form.bedrooms || "—"}</p><p className="mt-1 text-[9px] uppercase tracking-wide text-[#899089]">Beds</p></div>
+                <div className="rounded-xl border border-[#E7E0D3] p-3"><p className="font-bold">{form.bathrooms || "—"}</p><p className="mt-1 text-[9px] uppercase tracking-wide text-[#899089]">Baths</p></div>
+                <div className="rounded-xl border border-[#E7E0D3] p-3"><p className="font-bold">{form.area_sqm || "—"}</p><p className="mt-1 text-[9px] uppercase tracking-wide text-[#899089]">m²</p></div>
               </div>
 
               {(form.floor_number || form.nearby_transit || form.postal_code) && (
                 <div className="mt-5 space-y-2 border-t border-[#EEE8DB] pt-4 text-xs text-[#66736B]">
                   {form.floor_number && form.property_type !== "land" && <p><span className="font-bold text-[#1F2E28]">{form.property_type === "house" || form.property_type === "townhouse" ? "Storeys:" : "Unit floor:"}</span> {form.floor_number}</p>}
-                  {form.nearby_transit && <p><span className="font-bold text-[#1F2E28]">Transit:</span> {form.nearby_transit}{form.transit_distance_m ? ` ยท ${Number(form.transit_distance_m).toLocaleString()} m` : ""}</p>}
+                  {form.nearby_transit && <p><span className="font-bold text-[#1F2E28]">Transit:</span> {form.nearby_transit}{form.transit_distance_m ? ` · ${Number(form.transit_distance_m).toLocaleString()} m` : ""}</p>}
                   {form.postal_code && <p><span className="font-bold text-[#1F2E28]">Postal code:</span> {form.postal_code}</p>}
                 </div>
               )}
@@ -1196,7 +1196,7 @@ export default function AddPropertyPage() {
 
           <div className="mt-4 rounded-2xl border border-[#D8C8A7] bg-[#FFF9EE] p-5">
             <div className="flex items-start gap-3">
-              <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#B8863F] text-xs font-black text-white">โ“</span>
+              <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#B8863F] text-xs font-black text-white">✓</span>
               <div><p className="text-sm font-bold">Pending BaanNest review</p><p className="mt-1 text-xs leading-5 text-[#6A756E]">Submitting does not publish the property immediately. BaanNest will review it first, and only approved listings become public.</p></div>
             </div>
           </div>
@@ -1205,7 +1205,7 @@ export default function AddPropertyPage() {
 
       <footer className="border-t border-[#DDD6C3] bg-[#F8F5ED]">
         <div className="mx-auto max-w-7xl px-6 py-8 text-sm text-[#5C6B62]">
-          ยฉ 2026 BaanNest ยท Bangkok, Thailand
+          © 2026 BaanNest · Bangkok, Thailand
         </div>
       </footer>
     </main>
