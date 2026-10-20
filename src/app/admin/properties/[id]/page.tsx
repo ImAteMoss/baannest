@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import {
   DndContext,
@@ -93,7 +92,6 @@ export default function EditPropertyPage() {
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [deleting, setDeleting] = useState(false);
   const [message, setMessage] = useState("");
 
   const [title, setTitle] = useState("");
@@ -370,32 +368,6 @@ export default function EditPropertyPage() {
     }
   }
 
-  async function handleDeleteProperty() {
-    const confirmed = window.confirm(
-      `Delete "${title || "this property"}" permanently?\n\nThis cannot be undone.`
-    );
-
-    if (!confirmed) return;
-
-    setDeleting(true);
-    setMessage("");
-
-    const { error } = await supabase
-      .from("properties")
-      .delete()
-      .eq("id", propertyId);
-
-    if (error) {
-      console.error("DELETE PROPERTY ERROR:", error);
-      setMessage(error.message);
-      setDeleting(false);
-      return;
-    }
-
-    router.push("/admin");
-    router.refresh();
-  }
-
   if (loading) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-[#F2EEE3] text-[#1F2E28]">
@@ -410,21 +382,6 @@ export default function EditPropertyPage() {
     <main className="min-h-screen bg-[#F2EEE3] text-[#1F2E28]">
       <div className="mx-auto max-w-5xl px-6 py-10">
         <div className="mb-8">
-          <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-            <Link
-              href="/admin"
-              className="text-sm font-semibold text-[#6B756F] transition hover:text-[#1F2E28]"
-            >
-              ← Back to Admin
-            </Link>
-            <Link
-              href={`/properties/${propertyId}`}
-              className="rounded-xl border border-[#D8D0BE] bg-white px-4 py-2 text-xs font-bold transition hover:border-[#1F2E28]"
-            >
-              View Listing
-            </Link>
-          </div>
-
           <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-[#B8863F]">
             Admin
           </p>
@@ -691,30 +648,6 @@ export default function EditPropertyPage() {
             </button>
           </section>
         </form>
-
-        <section className="mt-8 rounded-2xl border border-red-200 bg-red-50 p-6 shadow-sm">
-          <p className="text-xs font-bold uppercase tracking-[0.16em] text-red-600">
-            Danger Zone
-          </p>
-          <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h2 className="text-lg font-semibold text-red-900">
-                Delete Property
-              </h2>
-              <p className="mt-1 max-w-2xl text-sm leading-6 text-red-700">
-                Permanently remove this property from BaanNest. This action cannot be undone.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => void handleDeleteProperty()}
-              disabled={deleting}
-              className="shrink-0 rounded-xl bg-red-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {deleting ? "Deleting..." : "Delete Property"}
-            </button>
-          </div>
-        </section>
       </div>
     </main>
   );
