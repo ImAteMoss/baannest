@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { BriefcaseBusiness, CalendarDays, CheckCircle2, Inbox, Phone, Search } from "lucide-react";
+import { BriefcaseBusiness, CalendarDays, Inbox, Phone, Search, Trash2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 type Enquiry = {
@@ -62,6 +62,7 @@ export default function EnquiriesPage() {
   const [typeFilter, setTypeFilter] = useState<"all" | "enquiry" | "co_work">("all");
   const [query, setQuery] = useState("");
   const [error, setError] = useState("");
+  const [deletingLeadId, setDeletingLeadId] = useState<string | null>(null);
 
   useEffect(() => { load(); }, []);
 
@@ -148,6 +149,44 @@ export default function EnquiriesPage() {
 
     if (error) return setError(error.message);
     setItems((current) => current.map((item) => item.id === id ? { ...item, ...changes } : item));
+  }
+
+  async function deleteLead(id: string) {
+    if (!isAdmin || deletingLeadId) return;
+
+    const item = items.find((lead) => lead.id === id);
+    if (!item) return;
+
+    const property = properties[item.property_id];
+    const label =
+      item.enquiry_type === "co_work"
+        ? "co-work request"
+        : "lead";
+
+    const confirmed = window.confirm(
+      `Delete this ${label} permanently?\n\n${item.seeker_name}${property?.title ? ` • ${property.title}` : ""}\n\nThis removes its CRM status, notes and follow-up information. This cannot be undone.`
+    );
+
+    if (!confirmed) return;
+
+    setDeletingLeadId(id);
+    setError("");
+
+    const { error: deleteError } = await supabase
+      .from("property_enquiries")
+      .delete()
+      .eq("id", id);
+
+    if (deleteError) {
+      setError(deleteError.message);
+      setDeletingLeadId(null);
+      return;
+    }
+
+    setItems((current) =>
+      current.filter((lead) => lead.id !== id)
+    );
+    setDeletingLeadId(null);
   }
 
   const followUpState = (value: string | null) => {
@@ -348,6 +387,20 @@ export default function EnquiriesPage() {
                             rows={4} placeholder="Only BaanNest admin can see this..."
                             className="w-full resize-none rounded-xl border border-[#D8D0BE] bg-white px-3 py-3 text-xs leading-5 outline-none"/>
                         </label>
+
+                        <button
+                          type="button"
+                          onClick={() => deleteLead(item.id)}
+                          disabled={deletingLeadId === item.id}
+                          className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-xs font-bold text-red-700 transition hover:bg-red-700 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          <Trash2 size={14}/>
+                          {deletingLeadId === item.id
+                            ? "Deleting..."
+                            : item.enquiry_type === "co_work"
+                            ? "Delete Co-work Request"
+                            : "Delete Lead"}
+                        </button>
                       </div>
                     )}
                   </div>

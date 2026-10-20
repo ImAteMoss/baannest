@@ -92,6 +92,7 @@ export default function EditPropertyPage() {
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [message, setMessage] = useState("");
 
   const [title, setTitle] = useState("");
@@ -243,6 +244,87 @@ export default function EditPropertyPage() {
 
       return arrayMove(current, oldIndex, newIndex);
     });
+  }
+
+  function getStoragePathFromPublicUrl(url: string) {
+    const marker = "/storage/v1/object/public/property-images/";
+    const markerIndex = url.indexOf(marker);
+
+    if (markerIndex === -1) return null;
+
+    return decodeURIComponent(
+      url.slice(markerIndex + marker.length)
+    );
+  }
+
+  async function handleDeleteProperty() {
+    if (deleting) return;
+
+    const confirmed = window.confirm(
+      `Delete "${title || "this property"}" permanently?\n\nThis removes the listing from BaanNest. If it is linked to protected CRM or deal records, Supabase will block the deletion so that history is not lost.`
+    );
+
+    if (!confirmed) return;
+
+    setDeleting(true);
+    setMessage("");
+
+    try {
+      const storagePaths = photos
+        .filter((photo) => photo.existing)
+        .map((photo) =>
+          getStoragePathFromPublicUrl(photo.preview)
+        )
+        .filter((path): path is string => Boolean(path));
+
+      const { error: deletePropertyError } =
+        await supabase
+          .from("properties")
+          .delete()
+          .eq("id", propertyId);
+
+      if (deletePropertyError) {
+        throw deletePropertyError;
+      }
+
+      // The database row is already deleted at this point.
+      // Storage cleanup is best-effort so a storage policy problem
+      // does not bring the deleted listing back.
+      if (storagePaths.length > 0) {
+        const { error: storageError } =
+          await supabase.storage
+            .from("property-images")
+            .remove(storagePaths);
+
+        if (storageError) {
+          console.error(
+            "PROPERTY IMAGE CLEANUP ERROR:",
+            storageError
+          );
+        }
+      }
+
+      router.push("/admin");
+      router.refresh();
+    } catch (error: any) {
+      console.error("DELETE PROPERTY ERROR:", error);
+
+      const rawMessage =
+        error?.message ||
+        "Unable to delete this property.";
+
+      if (
+        rawMessage.toLowerCase().includes("foreign key")
+      ) {
+        setMessage(
+          "This property is still linked to another record (for example photos, enquiries, or a deal). Supabase blocked the deletion to protect that data."
+        );
+      } else {
+        setMessage(rawMessage);
+      }
+    } finally {
+      setDeleting(false);
+    }
   }
 
   async function handleSave(
@@ -646,6 +728,36 @@ export default function EditPropertyPage() {
                 ? "Saving Changes..."
                 : "Save Changes"}
             </button>
+          </section>
+
+          {/* DANGER ZONE */}
+          <section className="rounded-2xl border border-red-200 bg-red-50/60 p-6 shadow-sm">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-red-700">
+                  Danger Zone
+                </p>
+                <h2 className="mt-1 text-lg font-semibold text-red-900">
+                  Delete Property
+                </h2>
+                <p className="mt-1 max-w-2xl text-sm leading-6 text-red-700/80">
+                  Permanently remove this listing from BaanNest. This cannot be undone.
+                  Linked CRM or deal records may prevent deletion so their history is not
+                  accidentally lost.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleDeleteProperty}
+                disabled={saving || deleting}
+                className="shrink-0 rounded-xl border border-red-300 bg-white px-5 py-3 text-sm font-bold text-red-700 transition hover:bg-red-700 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {deleting
+                  ? "Deleting Property..."
+                  : "Delete Property"}
+              </button>
+            </div>
           </section>
         </form>
       </div>
