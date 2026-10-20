@@ -14,8 +14,9 @@ import {
   Inbox,
   BadgeDollarSign,
   Plus,
-  RefreshCcw,
+  Pencil,
   Search,
+  Trash2,
   TrendingUp,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
@@ -55,6 +56,7 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
+  const [deletingPropertyId, setDeletingPropertyId] = useState<string | null>(null);
 
   useEffect(() => { void loadDashboard(); }, []);
 
@@ -140,6 +142,34 @@ export default function AdminPage() {
   }, [properties, query]);
 
   const recentLeads = leads.slice(0, 5);
+
+  async function deleteProperty(property: Property) {
+    const confirmed = window.confirm(
+      `Delete "${property.title}" permanently?\n\nThis cannot be undone.`
+    );
+
+    if (!confirmed) return;
+
+    setDeletingPropertyId(property.id);
+    setError("");
+
+    const { error: deleteError } = await supabase
+      .from("properties")
+      .delete()
+      .eq("id", property.id);
+
+    if (deleteError) {
+      console.error("DELETE PROPERTY ERROR:", deleteError);
+      setError(deleteError.message);
+      setDeletingPropertyId(null);
+      return;
+    }
+
+    setProperties((current) =>
+      current.filter((item) => item.id !== property.id)
+    );
+    setDeletingPropertyId(null);
+  }
 
   if (loading) {
     return (
@@ -291,7 +321,30 @@ export default function AdminPage() {
                         <p className="text-sm font-bold">฿{Number(property.listing_type === "rent" ? (property.rent_price ?? property.price) : (property.sale_price ?? property.price)).toLocaleString()}{property.listing_type === "rent" && <span className="font-normal text-[#7B847E]"> /mo</span>}</p>
                       )}
                     </div>
-                    <Link href={`/properties/${property.id}`} className="rounded-xl border border-[#D8D0BE] px-3 py-2 text-xs font-bold hover:border-[#1F2E28]">View</Link>
+                    <div className="flex flex-wrap items-center justify-end gap-2">
+                      <Link
+                        href={`/properties/${property.id}`}
+                        className="rounded-xl border border-[#D8D0BE] px-3 py-2 text-xs font-bold transition hover:border-[#1F2E28]"
+                      >
+                        View
+                      </Link>
+                      <Link
+                        href={`/admin/properties/${property.id}/edit`}
+                        className="inline-flex items-center gap-1.5 rounded-xl border border-[#C9B999] bg-[#F7F3E9] px-3 py-2 text-xs font-bold text-[#6E542E] transition hover:border-[#A16F32] hover:bg-[#F2E8D7]"
+                      >
+                        <Pencil size={13} />
+                        Edit
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => void deleteProperty(property)}
+                        disabled={deletingPropertyId === property.id}
+                        className="inline-flex items-center gap-1.5 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold text-red-700 transition hover:border-red-300 hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        <Trash2 size={13} />
+                        {deletingPropertyId === property.id ? "Deleting..." : "Delete"}
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
